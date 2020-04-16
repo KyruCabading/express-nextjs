@@ -1,21 +1,28 @@
-// server.js
-const { createServer } = require("http");
 const express = require("express");
 const next = require("next");
 
-const nextApp = next({ dev: process.env.NODE_ENV !== "production" });
-const nextHandle = nextApp.getRequestHandler();
+const port = parseInt(process.env.PORT, 10) || 3000;
+const dev = process.env.NODE_ENV !== "production";
+const app = next({ dev });
+const handle = app.getRequestHandler();
 
-nextApp.prepare().then(() => {
-  const app = express();
-  app.get("/a", (req, res) => {
-    res.send("Hello");
+app.prepare().then(() => {
+  const server = express();
+
+  server.get("/a", (req, res) => {
+    res.send("A");
   });
 
-  app.get("*", (req, res) => {
-    nextHandle(req, res);
+  server.get("/b", (req, res) => {
+    return app.render(req, res, "/b", req.query);
   });
 
-  const server = createServer(app);
-  server.listen(3000, () => {});
+  server.all("*", (req, res) => {
+    return handle(req, res);
+  });
+
+  server.listen(port, (err) => {
+    if (err) throw err;
+    console.log(`> Ready on http://localhost:${port}`);
+  });
 });
