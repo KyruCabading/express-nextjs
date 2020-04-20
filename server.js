@@ -14,7 +14,7 @@ app.prepare().then(() => {
   server.engine("handlebars", exphbs({ defaultLayout: "main" }));
   server.set("view engine", "handlebars");
 
-  app.use(flash());
+  server.use(flash());
 
   server.get("/a", (req, res) => {
     res.send("A");
