@@ -1,5 +1,6 @@
 const express = require("express");
 const next = require("next");
+const flash = require("express-flash");
 const exphbs = require("express-handlebars");
 
 const port = parseInt(process.env.PORT, 10) || 3000;
@@ -12,6 +13,8 @@ app.prepare().then(() => {
 
   server.engine("handlebars", exphbs({ defaultLayout: "main" }));
   server.set("view engine", "handlebars");
+
+  app.use(flash());
 
   server.get("/a", (req, res) => {
     res.send("A");
